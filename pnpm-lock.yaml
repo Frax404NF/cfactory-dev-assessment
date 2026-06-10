@@ -35,27 +35,18 @@ importers:
 
   packages/backend:
     dependencies:
-      '@aws-sdk/client-s3':
-        specifier: 3.712.0
-        version: 3.712.0
-      '@aws-sdk/s3-request-presigner':
-        specifier: 3.712.0
-        version: 3.712.0
       '@hono/node-server':
         specifier: 1.13.7
         version: 1.13.7(hono@4.6.14)
+      '@image-processor/infra':
+        specifier: workspace:*
+        version: link:../infra
       '@image-processor/shared':
         specifier: workspace:*
         version: link:../shared
-      bullmq:
-        specifier: 5.34.3
-        version: 5.34.3
       hono:
         specifier: 4.6.14
         version: 4.6.14
-      ioredis:
-        specifier: 5.4.2
-        version: 5.4.2
     devDependencies:
       '@types/node':
         specifier: 22.10.2
@@ -70,6 +61,31 @@ importers:
         specifier: workspace:*
         version: link:../shared
     devDependencies:
+      typescript:
+        specifier: 5.7.2
+        version: 5.7.2
+
+  packages/infra:
+    dependencies:
+      '@aws-sdk/client-s3':
+        specifier: 3.712.0
+        version: 3.712.0
+      '@aws-sdk/s3-request-presigner':
+        specifier: 3.712.0
+        version: 3.712.0
+      '@image-processor/shared':
+        specifier: workspace:*
+        version: link:../shared
+      bullmq:
+        specifier: 5.34.3
+        version: 5.34.3
+      ioredis:
+        specifier: 5.4.2
+        version: 5.4.2
+    devDependencies:
+      '@types/node':
+        specifier: 22.10.2
+        version: 22.10.2
       typescript:
         specifier: 5.7.2
         version: 5.7.2
@@ -89,9 +105,15 @@ importers:
 
   packages/worker:
     dependencies:
+      '@image-processor/infra':
+        specifier: workspace:*
+        version: link:../infra
       '@image-processor/shared':
         specifier: workspace:*
         version: link:../shared
+      bullmq:
+        specifier: 5.34.3
+        version: 5.34.3
       sharp:
         specifier: 0.33.5
         version: 0.33.5

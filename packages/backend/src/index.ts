@@ -2,9 +2,7 @@ import { serve } from '@hono/node-server'
 import { Hono } from 'hono'
 import { cors } from 'hono/cors'
 import { envSchema } from '@image-processor/shared'
-import { createStorageService } from './storage.js'
-import { createJobStore } from './job-store.js'
-import { createJobQueue } from './queue.js'
+import { createStorageService, createJobStore, createJobQueue } from '@image-processor/infra'
 import { createRoutes } from './routes.js'
 
 const env = envSchema.parse(process.env)
