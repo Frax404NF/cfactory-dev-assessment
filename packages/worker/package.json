@@ -1,0 +1,16 @@
+{
+  "name": "@image-processor/worker",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "tsc -b",
+    "dev": "tsx watch src/index.ts"
+  },
+  "dependencies": {
+    "@image-processor/shared": "workspace:*"
+  },
+  "devDependencies": {
+    "typescript": "5.7.2"
+  }
+}
