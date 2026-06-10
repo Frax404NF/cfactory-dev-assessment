@@ -1,0 +1,38 @@
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+
+# Test coverage
+coverage/
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+
+# OS junk — Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# OS junk — macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+
+# OS junk — Linux
+*~
+.directory
+
+# Test outputs
+*.webp
+
+# Turbo
+.turbo
+
+# IDE
+.vscode/
+.idea/
