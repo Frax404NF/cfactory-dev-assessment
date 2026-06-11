@@ -10,6 +10,9 @@ export function ErrorDisplay({ jobId, error, fileName, onReset }: ErrorDisplayPr
     <div className="rounded-xl bg-[var(--color-surface)] p-6 space-y-6">
       <div className="space-y-4">
         <p className="text-[0.8125rem] text-[var(--color-error)] leading-relaxed">{error}</p>
+        <p className="text-xs text-[var(--color-text-secondary)] leading-relaxed">
+          Check that the file is a valid image (JPEG, PNG, or WebP) under 20 MB and try again.
+        </p>
 
         <dl className="space-y-3 text-[0.8125rem]">
           <div className="flex justify-between items-baseline">

@@ -4,22 +4,20 @@ const ACCEPTED_TYPES = ['image/jpeg', 'image/png', 'image/webp']
 const MAX_SIZE = 20 * 1024 * 1024
 
 interface UploadZoneProps {
-  onUpload: (file: File) => void
-  uploading?: boolean
-  fileName?: string
+  onFileSelect: (file: File) => void
 }
 
-export function UploadZone({ onUpload, uploading, fileName }: UploadZoneProps) {
+export function UploadZone({ onFileSelect }: UploadZoneProps) {
   const [dragOver, setDragOver] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const inputRef = useRef<HTMLInputElement>(null)
 
   const validate = useCallback((file: File): string | null => {
     if (!ACCEPTED_TYPES.includes(file.type)) {
-      return 'Unsupported format. Use JPEG, PNG, or WebP.'
+      return 'This file type isn\u2019t supported. Try a JPEG, PNG, or WebP image.'
     }
     if (file.size > MAX_SIZE) {
-      return 'File exceeds 20 MB limit.'
+      return 'This file is over 20 MB. Try a smaller image.'
     }
     return null
   }, [])
@@ -32,9 +30,9 @@ export function UploadZone({ onUpload, uploading, fileName }: UploadZoneProps) {
         return
       }
       setError(null)
-      onUpload(file)
+      onFileSelect(file)
     },
-    [validate, onUpload],
+    [validate, onFileSelect],
   )
 
   const handleDrop = useCallback(
@@ -63,18 +61,13 @@ export function UploadZone({ onUpload, uploading, fileName }: UploadZoneProps) {
     }
   }, [])
 
-  const handleClick = useCallback(() => {
-    if (!uploading) inputRef.current?.click()
-  }, [uploading])
-
   return (
     <div>
       <div
         role="button"
         tabIndex={0}
         aria-label="Upload image. Accepts JPEG, PNG, or WebP up to 20 MB."
-        aria-disabled={uploading}
-        onClick={handleClick}
+        onClick={() => inputRef.current?.click()}
         onKeyDown={handleKeyDown}
         onDrop={handleDrop}
         onDragOver={(e) => {
@@ -91,47 +84,32 @@ export function UploadZone({ onUpload, uploading, fileName }: UploadZoneProps) {
           dragOver
             ? 'border-[var(--color-accent)] bg-[var(--color-accent)]/5'
             : 'border-[var(--color-border)] bg-[var(--color-surface)] hover:border-[var(--color-accent)]/50 hover:bg-[var(--color-surface)]',
-          uploading ? 'pointer-events-none' : '',
         ].join(' ')}
       >
-        {uploading ? (
-          <div className="flex flex-col items-center gap-3 px-6 text-center">
-            <div className="flex gap-1.5" aria-hidden="true">
-              <span className="w-2 h-2 rounded-full bg-[var(--color-accent)] animate-pulse" />
-              <span className="w-2 h-2 rounded-full bg-[var(--color-accent)] animate-pulse [animation-delay:150ms]" />
-              <span className="w-2 h-2 rounded-full bg-[var(--color-accent)] animate-pulse [animation-delay:300ms]" />
-            </div>
-            <span className="text-sm font-mono text-[var(--color-text-secondary)] truncate max-w-[90%]">
-              {fileName}
-            </span>
-            <span className="text-xs text-[var(--color-text-secondary)]">Uploading</span>
+        <div className="flex flex-col items-center gap-4 px-6 text-center">
+          <div className="p-3 rounded-lg bg-[var(--color-accent)]/10">
+            <svg
+              width="28"
+              height="28"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              className="text-[var(--color-accent)]"
+              aria-hidden="true"
+            >
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+              <polyline points="17 8 12 3 7 8" />
+              <line x1="12" y1="3" x2="12" y2="15" />
+            </svg>
           </div>
-        ) : (
-          <div className="flex flex-col items-center gap-4 px-6 text-center">
-            <div className="p-3 rounded-lg bg-[var(--color-accent)]/10">
-              <svg
-                width="28"
-                height="28"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="1.5"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                className="text-[var(--color-accent)]"
-                aria-hidden="true"
-              >
-                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-                <polyline points="17 8 12 3 7 8" />
-                <line x1="12" y1="3" x2="12" y2="15" />
-              </svg>
-            </div>
-            <div className="space-y-1">
-              <p className="text-sm font-medium text-[var(--color-text)]">Drop an image here</p>
-              <p className="text-xs text-[var(--color-text-secondary)]">or click to browse</p>
-            </div>
+          <div className="space-y-1">
+            <p className="text-sm font-medium text-[var(--color-text)]">Drop an image here</p>
+            <p className="text-xs text-[var(--color-text-secondary)]">or click to browse</p>
           </div>
-        )}
+        </div>
 
         <input
           ref={inputRef}

@@ -1,3 +1,5 @@
+import { useCallback, useState } from 'react'
+
 interface ResultDisplayProps {
   jobId: string
   downloadUrl: string
@@ -14,6 +16,27 @@ export function ResultDisplay({
   onReset,
 }: ResultDisplayProps) {
   const formattedSize = formatBytes(fileSize)
+  const [downloading, setDownloading] = useState(false)
+
+  const handleDownload = useCallback(async () => {
+    setDownloading(true)
+    try {
+      const res = await fetch(downloadUrl)
+      const blob = await res.blob()
+      const url = URL.createObjectURL(blob)
+      const a = document.createElement('a')
+      a.href = url
+      a.download = fileName.replace(/\.\w+$/, '.webp')
+      document.body.appendChild(a)
+      a.click()
+      document.body.removeChild(a)
+      URL.revokeObjectURL(url)
+    } catch {
+      window.open(downloadUrl, '_blank')
+    } finally {
+      setDownloading(false)
+    }
+  }, [downloadUrl, fileName])
 
   return (
     <div className="rounded-xl bg-[var(--color-surface)] p-6 space-y-6">
@@ -42,9 +65,10 @@ export function ResultDisplay({
       </dl>
 
       <div className="pt-2 space-y-3">
-        <a
-          href={downloadUrl}
-          download="processed.webp"
+        <button
+          onClick={handleDownload}
+          disabled={downloading}
+          type="button"
           className={[
             'inline-flex items-center justify-center w-full',
             'px-5 py-3 rounded-lg font-medium text-sm',
@@ -52,10 +76,11 @@ export function ResultDisplay({
             'transition-all duration-200 ease-[cubic-bezier(0.16,1,0.3,1)]',
             'hover:brightness-110',
             'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-accent)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--color-bg)]',
+            'disabled:opacity-50 disabled:cursor-not-allowed',
           ].join(' ')}
         >
-          Download WebP
-        </a>
+          {downloading ? 'Downloading...' : 'Download WebP'}
+        </button>
 
         <button
           onClick={onReset}

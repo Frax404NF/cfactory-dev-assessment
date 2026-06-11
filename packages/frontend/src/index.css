@@ -1,15 +1,15 @@
 @import 'tailwindcss';
 
 @theme {
-  --color-bg: oklch(0.13 0.005 260);
-  --color-surface: oklch(0.17 0.007 260);
-  --color-text: oklch(0.93 0.005 260);
-  --color-text-secondary: oklch(0.65 0.01 260);
+  --color-bg: oklch(0.14 0.005 260);
+  --color-surface: oklch(0.2 0.008 260);
+  --color-text: oklch(0.95 0.005 260);
+  --color-text-secondary: oklch(0.7 0.01 260);
   --color-accent: oklch(0.75 0.15 190);
   --color-accent-hover: oklch(0.8 0.15 190);
-  --color-error: oklch(0.65 0.2 25);
-  --color-success: oklch(0.7 0.15 155);
-  --color-border: oklch(0.25 0.01 260);
+  --color-error: oklch(0.7 0.18 25);
+  --color-success: oklch(0.72 0.15 155);
+  --color-border: oklch(0.28 0.01 260);
   --color-border-accent: oklch(0.75 0.15 190);
 
   --font-sans: 'Inter', system-ui, sans-serif;

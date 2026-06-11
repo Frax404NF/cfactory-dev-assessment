@@ -1,6 +1,7 @@
 import { useCallback, useState } from 'react'
 import type { JobStatusResponse } from '@image-processor/shared'
 import { UploadZone } from './components/UploadZone'
+import { PreviewDisplay } from './components/PreviewDisplay'
 import { StatusDisplay } from './components/StatusDisplay'
 import { ResultDisplay } from './components/ResultDisplay'
 import { ErrorDisplay } from './components/ErrorDisplay'
@@ -9,7 +10,8 @@ import { getDownloadUrl, uploadImage } from './api'
 
 type AppState =
   | { phase: 'idle' }
-  | { phase: 'uploading'; file: File }
+  | { phase: 'preview'; file: File; previewUrl: string }
+  | { phase: 'uploading'; file: File; previewUrl: string }
   | {
       phase: 'polling'
       jobId: string
@@ -57,11 +59,20 @@ export function App() {
 
   useJobPolling(pollingJobId, handlePollUpdate)
 
-  const handleUpload = useCallback(async (file: File) => {
-    setState({ phase: 'uploading', file })
+  const handleFileSelect = useCallback((file: File) => {
+    const previewUrl = URL.createObjectURL(file)
+    setState({ phase: 'preview', file, previewUrl })
+  }, [])
+
+  const handleStartProcessing = useCallback(async () => {
+    if (state.phase !== 'preview') return
+    const { file, previewUrl } = state
+
+    setState({ phase: 'uploading', file, previewUrl })
 
     try {
       const response = await uploadImage(file)
+      URL.revokeObjectURL(previewUrl)
       setState({
         phase: 'polling',
         jobId: response.job_id,
@@ -70,6 +81,7 @@ export function App() {
         fileSize: file.size,
       })
     } catch (err) {
+      URL.revokeObjectURL(previewUrl)
       setState({
         phase: 'failed',
         jobId: '',
@@ -77,11 +89,14 @@ export function App() {
         fileName: file.name,
       })
     }
-  }, [])
+  }, [state])
 
   const handleReset = useCallback(() => {
+    if (state.phase === 'preview' || state.phase === 'uploading') {
+      URL.revokeObjectURL(state.previewUrl)
+    }
     setState({ phase: 'idle' })
-  }, [])
+  }, [state])
 
   return (
     <main className="min-h-screen flex flex-col items-center justify-center px-4 py-16">
@@ -96,10 +111,16 @@ export function App() {
         </header>
 
         <section>
-          {state.phase === 'idle' && <UploadZone onUpload={handleUpload} />}
+          {state.phase === 'idle' && <UploadZone onFileSelect={handleFileSelect} />}
 
-          {state.phase === 'uploading' && (
-            <UploadZone onUpload={handleUpload} uploading fileName={state.file.name} />
+          {(state.phase === 'preview' || state.phase === 'uploading') && (
+            <PreviewDisplay
+              file={state.file}
+              previewUrl={state.previewUrl}
+              uploading={state.phase === 'uploading'}
+              onStart={handleStartProcessing}
+              onCancel={handleReset}
+            />
           )}
 
           {state.phase === 'polling' && (
