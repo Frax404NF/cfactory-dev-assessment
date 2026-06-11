@@ -3,6 +3,7 @@ import { z } from 'zod'
 export const envSchema = z.object({
   REDIS_URL: z.string().url().default('redis://localhost:6379'),
   S3_ENDPOINT: z.string().url().default('http://localhost:9000'),
+  S3_PUBLIC_ENDPOINT: z.string().url().default('http://localhost:9000'),
   S3_REGION: z.string().default('us-east-1'),
   S3_BUCKET: z.string().default('image-processor'),
   S3_ACCESS_KEY: z.string().default('minioadmin'),

@@ -16,6 +16,7 @@ function extensionFromMime(mime: string): string {
 
 interface StorageConfig {
   endpoint: string
+  publicEndpoint: string
   region: string
   bucket: string
   accessKeyId: string
@@ -26,20 +27,28 @@ interface StorageConfig {
 
 class S3StorageService implements StorageService {
   private client: S3Client
+  private presignClient: S3Client
   private bucket: string
   private presignTtl: number
 
   constructor(config: StorageConfig) {
     this.bucket = config.bucket
     this.presignTtl = config.presignTtl
+    const credentials = {
+      accessKeyId: config.accessKeyId,
+      secretAccessKey: config.secretAccessKey,
+    }
     this.client = new S3Client({
       endpoint: config.endpoint,
       region: config.region,
       forcePathStyle: config.forcePathStyle,
-      credentials: {
-        accessKeyId: config.accessKeyId,
-        secretAccessKey: config.secretAccessKey,
-      },
+      credentials,
+    })
+    this.presignClient = new S3Client({
+      endpoint: config.publicEndpoint,
+      region: config.region,
+      forcePathStyle: config.forcePathStyle,
+      credentials,
     })
   }
 
@@ -100,13 +109,14 @@ class S3StorageService implements StorageService {
       Key: ref,
     })
 
-    return getSignedUrl(this.client, command, { expiresIn: this.presignTtl })
+    return getSignedUrl(this.presignClient, command, { expiresIn: this.presignTtl })
   }
 }
 
 export function createStorageService(env: Env): StorageService {
   return new S3StorageService({
     endpoint: env.S3_ENDPOINT,
+    publicEndpoint: env.S3_PUBLIC_ENDPOINT,
     region: env.S3_REGION,
     bucket: env.S3_BUCKET,
     accessKeyId: env.S3_ACCESS_KEY,
