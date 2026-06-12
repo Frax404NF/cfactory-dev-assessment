@@ -20,6 +20,7 @@ const worker = new Worker(
     const { jobId } = job.data as { jobId: string }
 
     await jobStore.markProcessing(jobId)
+    console.log(`Processing job ${jobId}`)
 
     const record = await jobStore.get(jobId)
     if (!record) throw new Error(`Job ${jobId} not found`)
@@ -29,6 +30,7 @@ const worker = new Worker(
     const processedRef = await storage.putProcessed(jobId, processed)
 
     await jobStore.markCompleted(jobId, processedRef)
+    console.log(`Completed job ${jobId}`)
   },
   { connection, concurrency: 2, lockDuration: 60000 },
 )
