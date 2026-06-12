@@ -6,7 +6,8 @@
     "lint": "eslint .",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "prepare": "husky || true"
+    "prepare": "husky || true",
+    "test": "pnpm --filter @image-processor/worker run test && pnpm --filter @image-processor/infra run test"
   },
   "devDependencies": {
     "eslint": "9.17.0",
