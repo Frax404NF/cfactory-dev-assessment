@@ -46,7 +46,7 @@ export class RedisJobStore implements JobStore {
   async markProcessing(id: string): Promise<void> {
     const job = await this.get(id)
     if (!job) throw new Error(`Job ${id} not found`)
-    if (job.status !== 'pending') {
+    if (job.status !== 'pending' && job.status !== 'processing') {
       throw new Error(`Job ${id} cannot transition from ${job.status} to processing`)
     }
     await this.redis.hset(`job:${id}`, {

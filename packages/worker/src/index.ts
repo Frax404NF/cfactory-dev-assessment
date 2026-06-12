@@ -30,7 +30,7 @@ const worker = new Worker(
 
     await jobStore.markCompleted(jobId, processedRef)
   },
-  { connection, concurrency: 2 },
+  { connection, concurrency: 2, lockDuration: 60000 },
 )
 
 worker.on('failed', async (job, err) => {

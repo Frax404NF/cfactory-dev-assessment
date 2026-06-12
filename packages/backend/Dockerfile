@@ -3,7 +3,7 @@ RUN corepack enable && corepack prepare pnpm@9.15.4 --activate
 WORKDIR /app
 
 FROM base AS build
-COPY pnpm-lock.yaml pnpm-workspace.yaml package.json tsconfig.base.json ./
+COPY pnpm-lock.yaml pnpm-workspace.yaml package.json tsconfig.base.json .npmrc ./
 COPY packages/shared/package.json ./packages/shared/
 COPY packages/infra/package.json ./packages/infra/
 COPY packages/backend/package.json ./packages/backend/
@@ -15,7 +15,7 @@ RUN npx tsc -b packages/shared packages/infra packages/backend
 
 FROM base AS runner
 ENV NODE_ENV=production
-COPY pnpm-lock.yaml pnpm-workspace.yaml package.json ./
+COPY pnpm-lock.yaml pnpm-workspace.yaml package.json .npmrc ./
 COPY packages/shared/package.json ./packages/shared/
 COPY packages/infra/package.json ./packages/infra/
 COPY packages/backend/package.json ./packages/backend/
