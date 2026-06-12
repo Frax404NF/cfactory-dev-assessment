@@ -8,6 +8,8 @@ services:
       interval: 5s
       timeout: 3s
       retries: 5
+    logging:
+      driver: none
 
   minio:
     image: minio/minio:latest
@@ -23,6 +25,8 @@ services:
       interval: 5s
       timeout: 3s
       retries: 5
+    logging:
+      driver: none
 
   minio-init:
     image: minio/mc:latest
@@ -35,6 +39,8 @@ services:
       mc alias set local http://minio:9000 minioadmin minioadmin &&
       mc mb --ignore-existing local/image-processor
       "
+    logging:
+      driver: none
 
   backend:
     build:
